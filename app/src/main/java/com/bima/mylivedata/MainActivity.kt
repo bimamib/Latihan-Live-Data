@@ -2,6 +2,7 @@ package com.bima.mylivedata
 
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import com.bima.mylivedata.databinding.ActivityMainBinding
 
@@ -16,5 +17,15 @@ class MainActivity : AppCompatActivity() {
         setContentView(activityMainBinding.root)
 
         liveDataTimerViewModel = ViewModelProvider(this)[MainViewModel::class.java]
+        subscribe()
+    }
+
+    private fun subscribe() {
+        val elapsedTimeObserver = Observer<Long?> { aLong ->
+            val newText = this@MainActivity.resources.getString(R.string.seconds, aLong)
+            activityMainBinding.timerTextview.text = newText
+        }
+
+        liveDataTimerViewModel.getElapsedTime().observe(this, elapsedTimeObserver)
     }
 }
